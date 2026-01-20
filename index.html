@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenAI | Answer Evaluation & Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h2>Answer Evaluator</h2>
+
+    <form id="evalForm" method="POST">
+        <div class="input-group">
+            <label for="question">Question</label>
+            <input type="text" id="question" name="question" placeholder="Type the question here..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="model_answer">Standard Model Answer</label>
+            <textarea id="model_answer" name="model_answer" placeholder="Provide the ideal answer for comparison..." required></textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="student_answer">Student's Response</label>
+            <textarea id="student_answer" name="student_answer" placeholder="Paste the student's answer here..." required></textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="max_marks">Maximum Marks</label>
+            <input type="number" id="max_marks" name="max_marks" placeholder="Maximum score possible" required>
+        </div>
+
+        <button type="submit" id="submitBtn">
+            <span class="btn-text">Review Answer</span>
+            <div class="loading-spinner" id="spinner"></div>
+        </button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <div class="score-grid">
+            <div class="score-card">
+                <span class="score-label">Awarded Marks</span>
+                <span class="score-val">{{ result.marks }}</span>
+            </div>
+            <div class="score-card">
+                <span class="score-label">AI Similarity</span>
+                <span class="score-val">{{ (result.similarity * 100)|round }}%</span>
+            </div>
+        </div>
+
+        <div class="feedback-section">
+            <div class="feedback-title">AI Insights & Feedback</div>
+            <p>{{ result.feedback }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.getElementById('evalForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        const text = btn.querySelector('.btn-text');
+        const spinner = document.getElementById('spinner');
+        
+        btn.disabled = true;
+        text.style.display = 'none';
+        spinner.style.display = 'block';
+    });
+</script>
+
+</body>
+</html>
+
